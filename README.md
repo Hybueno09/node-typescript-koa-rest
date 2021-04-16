@@ -61,6 +61,7 @@ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJuYW1lIjoiSmF2aWVyIEF2
   - [dependencies](#dependencies-1)
   - [devDependencies](#devdependencies)
   - [Changelog](#changelog)
+    - [1.7.1](#171)
     - [1.7.0](#170)
     - [1.6.1](#161)
     - [1.6.0](#160)
@@ -86,6 +87,7 @@ To build and run this app locally you will need:
  * Docker-compose ready to go
  * Postman (newman) integration tests
  * Locust load tests
+ * Jest unit tests
  * Github actions - CI for building and testing the project
  * Cron jobs prepared
 
@@ -124,6 +126,21 @@ npm run test:integration:local (newman needed)
 npm run test:load (locust needed)
 ```
 
+- Run unit tests
+```
+npm run test
+```
+
+- Run unit tests with coverage 
+```
+npm run test:coverage
+```
+
+- Run unit tests on Jest watch mode
+```
+npm run test:watch
+```
+
 ## Docker (optional)
 A docker-compose file has been added to the project with a postgreSQL (already setting user, pass and dbname as the ORM config is expecting) and an ADMINER image (easy web db client).
 
@@ -154,11 +171,15 @@ It is importante to notice that, when serving the project directly with *.ts fil
 
 Notice that if NODE_ENV is set to development, the ORM config won't be using SSL to connect to the DB. Otherwise it will.
 
+And because Heroku uses self-signed certificates, this bit has been added, **please take it out if connecting to a local DB without SSL**.
+
 ```
 createConnection({
     ...
     extra: {
-        ssl: config.DbSslConn, // if not development, will use SSL
+        ssl: {
+            rejectUnauthorized: false // Heroku uses self signed certificates
+        }
     }
  })
 ```
@@ -477,6 +498,13 @@ To install or update these dependencies you can use `npm install` or `npm update
 
 
 ## Changelog
+### 1.8.0
+ - Unit tests included using Jest (Thanks to [@rafapaezbas](https://github.com/rafapaezbas))
+ - Upgrade all dependencies
+ - Upgrade to Node 14
+### 1.7.1
+ - Upgrading Locust + fixing load tests
+ - Improving Logger
 
 ### 1.7.0
  - Migrating `TSLint` (deprecated already) to `ESLint`
